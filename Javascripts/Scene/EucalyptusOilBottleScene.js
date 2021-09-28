@@ -12,12 +12,12 @@ export class EucalyptusOilBottleScene extends Scene {
     _initGeometries() {
         this.left_bottle =
             new EucalyptusOilBottle(
-                new Vector3(1, 0, 0),
+                new Vector3(-1, 0, 0),
                 new Vector3(-90, 0, 0),
             );
         this.right_bottle =
             new EucalyptusOilBottle(
-                new Vector3(-1, 0, 0),
+                new Vector3(1, 0, 0),
                 new Vector3(-90, 0, 0),
             );
         this.addGeometry(this.left_bottle);
@@ -36,9 +36,12 @@ export class EucalyptusOilBottleScene extends Scene {
     }
 
     _update() {
-        // this.webGlUtils.rotateZ(this.movementMatrix, 0.002);
-        // this.webGlUtils.rotateY(this.movementMatrix, 0.002);
-        // this.webGlUtils.rotateX(this.movementMatrix, 0.002);
+        this.webGlUtils.rotateZ(this.movementMatrix, 0.002);
+        this.webGlUtils.rotateY(this.movementMatrix, 0.002);
+        this.webGlUtils.rotateX(this.movementMatrix, 0.002);
         this._bindUniforms();
+        this.right_bottle.translate(new Vector3(0, 0.0016, 0));
+        this._initVerticesBuffer();
+        this._bindAttributes();
     }
 }

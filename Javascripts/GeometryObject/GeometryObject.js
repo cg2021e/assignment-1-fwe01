@@ -15,6 +15,24 @@ export class GeometryObject extends Geometry {
         this.geometries.push(geometry);
     }
 
+    setRotation(rotation) {
+        this.rotation = rotation;
+        this._initRotationMatrix();
+    }
+
+    rotate(vector3) {
+        this.rotation.x += vector3.x;
+        this.rotation.y += vector3.y;
+        this.rotation.z += vector3.z;
+        this._initRotationMatrix();
+    }
+
+    translate(vector3) {
+        this.position.x += vector3.x;
+        this.position.y += vector3.y;
+        this.position.z += vector3.z;
+    }
+
     getVertices() {
         let faceVertice = [];
         this.geometries.forEach((geometry) => {
