@@ -42,10 +42,10 @@ export class EucalyptusOilBottleScene extends Scene {
     }
 
     _update() {
-        // this.webGlUtils.rotateZ(this.movementMatrix, 0.002);
-        // this.webGlUtils.rotateY(this.movementMatrix, 0.002);
-        // this.webGlUtils.rotateX(this.movementMatrix, 0.002);
-        // this._bindUniforms();
+        this.webGlUtils.rotateZ(this.movementMatrix, 0.002);
+        this.webGlUtils.rotateY(this.movementMatrix, 0.002);
+        this.webGlUtils.rotateX(this.movementMatrix, 0.002);
+        this._bindUniforms();
 
         let right_bottle_position = this.right_bottle.position;
         if (right_bottle_position.y > 0.3 || right_bottle_position.y < -0.05) {

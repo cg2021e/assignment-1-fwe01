@@ -8,8 +8,8 @@ export class Color {
 
     static convertArrayOfColorsToFloatArray(arrayOfColors) {
         let float_array = [];
-        arrayOfColors.forEach(vertex => {
-            float_array.push(...vertex.toArray())
+        arrayOfColors.forEach(color => {
+            float_array.push(...color.toArray())
         })
         return float_array;
     }

@@ -3,9 +3,12 @@ import {Vector3} from "./Vector3.js";
 
 export default class Geometry {
     static randomColor = false;
-    color = new Color(0.3, 0.6, 0.1, 0.8);
     vertices = null;
     indices = null;
+
+    constructor(color) {
+        this.color = color;
+    }
 
     getVertices() {
         let faceVertices = [];

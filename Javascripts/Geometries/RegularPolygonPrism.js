@@ -2,8 +2,8 @@ import Geometry from "./Geometry.js";
 import {Vector3} from "./Vector3.js";
 
 export class RegularPolygonPrism extends Geometry {
-    constructor(position, height, numberOfVertice, lowerRadius, upperRadius = null) {
-        super();
+    constructor(position, height, numberOfVertice, color, lowerRadius, upperRadius = null) {
+        super(color);
         this.position = position;
         this.numberOfVertice = numberOfVertice;
         this.height = height;
