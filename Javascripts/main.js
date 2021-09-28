@@ -1,4 +1,4 @@
-import {EucalyptusOilBottle} from "./Scene/EucalyptusOilBottle.js";
+import {EucalyptusOilBottleScene} from "./Scene/EucalyptusOilBottleScene.js";
 
 window.onload = startCanvas();
 
@@ -7,8 +7,8 @@ function startCanvas() {
 }
 
 function drawBottle() {
-    let canvas = document.getElementById('myCanvasBox');
-    let scene = new EucalyptusOilBottle(canvas);
+    let canvas = document.getElementById('myCanvas');
+    let scene = new EucalyptusOilBottleScene(canvas);
 
     scene.start();
     animate();
