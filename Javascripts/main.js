@@ -17,7 +17,7 @@ function drawBottle() {
 
     function animate() {
         scene.animate()
-        requestAnimationFrame(animate);
+        // requestAnimationFrame(animate);
     }
 
     function onMouseClick() {

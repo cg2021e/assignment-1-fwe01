@@ -4,8 +4,8 @@ import {Vector3} from "../Geometries/Vector3.js";
 import {OctagonalPrism} from "../Geometries/OctagonalPrism.js";
 
 export class EucalyptusOilBottle extends GeometryObject {
-    constructor(position) {
-        super(position);
+    constructor(position, rotation = null) {
+        super(position, rotation);
         this._initGeometry();
     }
 

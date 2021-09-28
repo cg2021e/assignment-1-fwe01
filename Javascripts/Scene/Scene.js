@@ -40,7 +40,7 @@ export class Scene {
     }
 
     _initProjectionMatrix() {
-        this.projectionMatrix = this.webGlUtils.getProjection(20, 1, 10);
+        this.projectionMatrix = this.webGlUtils.getProjection(30, 1, 10);
     }
 
     _initViewMatrix() {

@@ -1,7 +1,8 @@
 import {Color} from "./Color.js";
+import {Vector3} from "./Vector3.js";
 
 export default class Geometry {
-    static randomColor = false;
+    static randomColor = true;
     color = new Color(0.3, 0.6, 0.1, 0.8);
     vertices = null;
     indices = null;
@@ -9,7 +10,7 @@ export default class Geometry {
     getVertices() {
         let faceVertices = [];
         this.indices.forEach((value) => {
-            faceVertices.push(this.vertices[value]);
+            faceVertices.push(Vector3.copyVector3(this.vertices[value]));
         })
         return faceVertices;
     }
