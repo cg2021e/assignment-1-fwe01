@@ -11,9 +11,9 @@ export class Vector3 {
 
     static convertArrayOfVector3ToFloatArray(arrayOfVector3) {
         let float_array = [];
-        arrayOfVector3.forEach(vector3 => {
-            float_array.push(...vector3.toArray())
-        })
+        for (let vert = 0; vert < arrayOfVector3.length; vert++) {
+            float_array.push(...arrayOfVector3[vert].toArray())
+        }
         return float_array;
     }
 

@@ -64,9 +64,9 @@ export class Scene {
 
     _initVerticesBuffer() {
         this.vertices = [];
-        this.geometries.forEach((geometry) => {
-            this.vertices.push(...geometry.getVertices());
-        });
+        for (let geometry = 0; geometry < this.geometries.length; geometry++) {
+            this.vertices.push(...this.geometries[geometry].getVertices());
+        }
         let float_vertice = Vector3.convertArrayOfVector3ToFloatArray(this.vertices);
         this.vertex_buffer = this.webGlUtils.initBuffer(
             BufferTypeEnum.ARRAY,
@@ -122,6 +122,11 @@ export class Scene {
     }
 
     _bindAttributes() {
+        this._bindVertexBuffer();
+        this._bindColorBuffer();
+    }
+
+    _bindVertexBuffer() {
         this.webGlUtils.bindAttributes(
             BufferTypeEnum.ARRAY,
             this.vertex_buffer,
@@ -129,6 +134,9 @@ export class Scene {
             3,
             DataTypeEnum.FLOAT
         );
+    }
+
+    _bindColorBuffer() {
         this.webGlUtils.bindAttributes(
             BufferTypeEnum.ARRAY,
             this.color_buffer,

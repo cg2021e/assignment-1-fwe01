@@ -7,6 +7,8 @@ export class EucalyptusOilBottleScene extends Scene {
     constructor(canvas) {
         super(canvas);
         this._initGeometries();
+        this.addY = 0.0016;
+        this.addZ = -0.0016;
     }
 
     _initGeometries() {
@@ -27,21 +29,31 @@ export class EucalyptusOilBottleScene extends Scene {
     _onMouseClick() {
         Geometry.randomColor = !Geometry.randomColor;
         this._initColorsBuffer();
-        this._bindAttributes();
+        this._bindColorBuffer();
     }
 
     animate() {
+        let startTime = new Date();
         this._update();
         this._render();
+        let endTime = new Date();
+        let timeDiff = endTime - startTime;
+        // console.log(timeDiff);
     }
 
     _update() {
-        this.webGlUtils.rotateZ(this.movementMatrix, 0.002);
-        this.webGlUtils.rotateY(this.movementMatrix, 0.002);
-        this.webGlUtils.rotateX(this.movementMatrix, 0.002);
-        this._bindUniforms();
-        this.right_bottle.translate(new Vector3(0, 0.0016, 0));
+        // this.webGlUtils.rotateZ(this.movementMatrix, 0.002);
+        // this.webGlUtils.rotateY(this.movementMatrix, 0.002);
+        // this.webGlUtils.rotateX(this.movementMatrix, 0.002);
+        // this._bindUniforms();
+
+        let right_bottle_position = this.right_bottle.position;
+        if (right_bottle_position.y > 0.3 || right_bottle_position.y < -0.05) {
+            this.addY *= -1;
+            this.addZ *= -1;
+        }
+        this.right_bottle.translate(new Vector3(0, this.addY, this.addZ));
         this._initVerticesBuffer();
-        this._bindAttributes();
+        this._bindVertexBuffer();
     }
 }

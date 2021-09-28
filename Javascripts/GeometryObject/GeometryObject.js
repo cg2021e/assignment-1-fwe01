@@ -35,9 +35,9 @@ export class GeometryObject extends Geometry {
 
     getVertices() {
         let faceVertice = [];
-        this.geometries.forEach((geometry) => {
-            faceVertice.push(...geometry.getVertices())
-        })
+        for(let geometry = 0; geometry < this.geometries.length; geometry++){
+           faceVertice.push(...this.geometries[geometry].getVertices());
+        }
         if (this.rotation != null) {
             for (let vert = 0; vert < faceVertice.length; vert++) {
                 let point = [faceVertice[vert].x - this.position.x, faceVertice[vert].y - this.position.y, faceVertice[vert].z - this.position.z];
