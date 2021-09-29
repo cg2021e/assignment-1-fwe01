@@ -9,19 +9,31 @@ export class EucalyptusOilBottle extends GeometryObject {
         0.46374509803921568627450980392157,
         0.65198039215686274509803921568627,
         0.18139215686274509803921568627451,
-        0.95
+        1
     )
     static SOLID_GREEN_SHADE = new Color(
         0.32549019607843137254901960784314,
         0.52549019607843137254901960784314,
         0.10980392156862745098039215686275,
-        0.95
+        1
     )
     static TRANSPARENT_GREEN = new Color(
         0.41960784313725490196078431372549,
         0.57647058823529411764705882352941,
         0.1921568627450980392156862745098,
         0.90
+    )
+    static LABELS_RED = new Color(
+        157 / 255,
+        55 / 255,
+        11 / 255,
+        1
+    )
+    static LABELS_GREEN = new Color(
+        125 / 255,
+        177 / 255,
+        63 / 255,
+        1
     )
 
     constructor(position, rotation = null) {
@@ -92,12 +104,23 @@ export class EucalyptusOilBottle extends GeometryObject {
             ),
             //Body
             new Cylinder(
-                new Vector3(this.position.x, this.position.y, this.position.z + -0.035875),
-                0.7,
+                new Vector3(this.position.x, this.position.y, this.position.z + 0.264125),
+                0.1,
                 EucalyptusOilBottle.TRANSPARENT_GREEN,
                 0.375
             ),
-            //transisi ke octagon
+            new Cylinder(
+                new Vector3(this.position.x, this.position.y, this.position.z + 0.014125),
+                0.4,
+                EucalyptusOilBottle.LABELS_GREEN,
+                0.375
+            ),
+            new Cylinder(
+                new Vector3(this.position.x, this.position.y, this.position.z - 0.285875),
+                0.2,
+                EucalyptusOilBottle.LABELS_RED,
+                0.375
+            ),
             //octagon
             new OctagonalPrism(
                 new Vector3(this.position.x, this.position.y, this.position.z + -0.735875),
