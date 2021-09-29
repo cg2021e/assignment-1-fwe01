@@ -13,14 +13,8 @@ function drawBottle() {
     scene.start();
     animate();
 
-    document.addEventListener("click", onMouseClick);
-
     function animate() {
         scene.animate()
         requestAnimationFrame(animate);
-    }
-
-    function onMouseClick() {
-        scene._onMouseClick()
     }
 }

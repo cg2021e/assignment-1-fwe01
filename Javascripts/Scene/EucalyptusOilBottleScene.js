@@ -15,7 +15,7 @@ export class EucalyptusOilBottleScene extends Scene {
         this.left_bottle =
             new EucalyptusOilBottle(
                 new Vector3(-1, 0, 0),
-                new Vector3(-90, 0, 0),
+                new Vector3(0, -65, -90),
             );
         this.right_bottle =
             new EucalyptusOilBottle(
@@ -42,13 +42,8 @@ export class EucalyptusOilBottleScene extends Scene {
     }
 
     _update() {
-        this.webGlUtils.rotateZ(this.movementMatrix, 0.002);
-        this.webGlUtils.rotateY(this.movementMatrix, 0.002);
-        this.webGlUtils.rotateX(this.movementMatrix, 0.002);
-        this._bindUniforms();
-
         let right_bottle_position = this.right_bottle.position;
-        if (right_bottle_position.y > 0.3 || right_bottle_position.y < -0.05) {
+        if (right_bottle_position.y > 0.25 || right_bottle_position.y < -0.04) {
             this.addY *= -1;
             this.addZ *= -1;
         }
