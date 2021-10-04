@@ -60,11 +60,11 @@ export class RegularPolygonPrism extends Geometry {
 
     initVertices() {
         this.vertices = [];
-        this.initUpperOctagonVertices();
-        this.initLowerOctagonVertices();
+        this.initUpperPolygonVertices();
+        this.initLowerPolygonVertices();
     }
 
-    initUpperOctagonVertices() {
+    initUpperPolygonVertices() {
         this.addVertex(
             new Vector3(
                 this.position.x,
@@ -87,7 +87,7 @@ export class RegularPolygonPrism extends Geometry {
         }
     }
 
-    initLowerOctagonVertices() {
+    initLowerPolygonVertices() {
         this.addVertex(
             new Vector3(
                 this.position.x,
