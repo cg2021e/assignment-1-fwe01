@@ -8,7 +8,6 @@ export class EucalyptusOilBottleScene extends Scene {
         super(canvas);
         this._initGeometries();
         this.addY = 0.0016;
-        this.addZ = -0.0016;
     }
 
     _initGeometries() {
@@ -43,11 +42,10 @@ export class EucalyptusOilBottleScene extends Scene {
 
     _update() {
         let right_bottle_position = this.right_bottle.position;
-        if (right_bottle_position.y > 0.25 || right_bottle_position.y < -0.04) {
+        if (right_bottle_position.y > 0.45 || right_bottle_position.y < -0.05) {
             this.addY *= -1;
-            this.addZ *= -1;
         }
-        this.right_bottle.translate(new Vector3(0, this.addY, this.addZ));
+        this.right_bottle.translate(new Vector3(0, this.addY, 0));
         this._initVerticesBuffer();
         this._bindVertexBuffer();
     }

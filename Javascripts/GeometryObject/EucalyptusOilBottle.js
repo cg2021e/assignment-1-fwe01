@@ -41,6 +41,11 @@ export class EucalyptusOilBottle extends GeometryObject {
         this._initGeometry();
     }
 
+    translate(vector3) {
+        super.translate(vector3);
+        this._initGeometry();
+    }
+
     _initGeometry() {
         this.geometries = [
             //Flap tutup
