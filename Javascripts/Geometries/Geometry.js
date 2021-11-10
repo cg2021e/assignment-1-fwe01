@@ -25,12 +25,13 @@ export default class Geometry {
 
             this.addNormals(
                 new Vector3(
-                    (vector1.y * vector2.z) - (vector1.z * vector2.y),
-                    (vector1.z * vector2.x) - (vector1.x * vector2.z),
-                    (vector1.x * vector2.y) - (vector1.y * vector2.x),
+                    1000000 * ((vector1.y * vector2.z) - (vector1.z * vector2.y)),
+                    1000000 * ((vector1.z * vector2.x) - (vector1.x * vector2.z)),
+                    1000000 * ((vector1.x * vector2.y) - (vector1.y * vector2.x)),
                 )
             )
         }
+        // console.log(this.normals);
     }
 
     getVertices() {

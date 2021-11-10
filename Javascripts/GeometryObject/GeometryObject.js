@@ -35,8 +35,8 @@ export class GeometryObject extends Geometry {
 
     getVertices() {
         let faceVertice = [];
-        for(let geometry = 0; geometry < this.geometries.length; geometry++){
-           faceVertice.push(...this.geometries[geometry].getVertices());
+        for (let geometry = 0; geometry < this.geometries.length; geometry++) {
+            faceVertice.push(...this.geometries[geometry].getVertices());
         }
         if (this.rotation != null) {
             for (let vert = 0; vert < faceVertice.length; vert++) {
@@ -53,7 +53,7 @@ export class GeometryObject extends Geometry {
 
     getNormals() {
         let faceNormals = [];
-        for(let geometry = 0; geometry < this.geometries.length; geometry++){
+        for (let geometry = 0; geometry < this.geometries.length; geometry++) {
             faceNormals.push(...this.geometries[geometry].getNormals());
         }
         if (this.rotation != null) {

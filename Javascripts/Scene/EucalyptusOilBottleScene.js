@@ -19,7 +19,7 @@ export class EucalyptusOilBottleScene extends Scene {
         this.right_bottle =
             new EucalyptusOilBottle(
                 new Vector3(1, 0, 0),
-                new Vector3(-90, 0, 0),
+                new Vector3(-90, -45, 0),
             );
         this.addGeometry(this.left_bottle);
         this.addGeometry(this.right_bottle);
@@ -33,7 +33,7 @@ export class EucalyptusOilBottleScene extends Scene {
 
     animate() {
         let startTime = new Date();
-        this._update();
+        // this._update();
         this._render();
         let endTime = new Date();
         let timeDiff = endTime - startTime;
@@ -45,8 +45,8 @@ export class EucalyptusOilBottleScene extends Scene {
         if (right_bottle_position.y > 0.45 || right_bottle_position.y < -0.05) {
             this.addY *= -1;
         }
-        // this.right_bottle.translate(new Vector3(0, this.addY, 0));
-        // this._initVerticesBuffer();
-        // this._bindVertexBuffer();
+        this.right_bottle.translate(new Vector3(0, this.addY, 0));
+        this._initVerticesBuffer();
+        this._bindVertexBuffer();
     }
 }
