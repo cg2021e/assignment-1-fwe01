@@ -13,6 +13,7 @@ export class Scene {
 
     vertex_buffer = null;
     color_buffer = null;
+    normal_buffer = null;
 
     constructor(canvas) {
         this._initWebGlUtils(canvas);
@@ -24,6 +25,7 @@ export class Scene {
     start() {
         this._initVerticesBuffer();
         this._initColorsBuffer();
+        this._initNormalsBuffer();
         this._startProgram();
         this._bindAttributes();
         this._bindUniforms();
@@ -90,6 +92,20 @@ export class Scene {
         );
     }
 
+    _initNormalsBuffer() {
+        this.normals = [];
+        for (let geometry = 0; geometry < this.geometries.length; geometry++) {
+            this.normals.push(...this.geometries[geometry].getNormals());
+        }
+        let float_normal = Vector3.convertArrayOfVector3ToFloatArray(this.normals);
+        this.normal_buffer = this.webGlUtils.initBuffer(
+            BufferTypeEnum.ARRAY,
+            DataTypeEnum.FLOAT,
+            float_normal,
+            UsageTypeEnum.STATIC
+        );
+    }
+
     _startProgram() {
         let vertCode = this._getVertCode();
         let vertShader = this.webGlUtils.createShader(ShaderTypeEnum.VERTEX, vertCode);
@@ -103,27 +119,55 @@ export class Scene {
     _getVertCode() {
         return 'attribute vec3 aCoordinates;' +
             'attribute vec4 aColor;' +
+            'attribute vec3 aNormal;' +
             'uniform mat4 uProjectionMatrix;' +
             'uniform mat4 uViewMatrix;' +
             'uniform mat4 uRotationMatrix;' +
             'varying vec4 vColor;' +
+            'varying vec3 vNormal;' +
+            'varying vec3 vPosition;' +
             'void main(void) {' +
             ' gl_Position = uProjectionMatrix * uViewMatrix * uRotationMatrix * vec4(aCoordinates, 1.0);' +
             ' gl_PointSize = 18.0;' +
             ' vColor = aColor;' +
+            ' vNormal = aNormal;' +
+            ' vPosition = (uRotationMatrix * (vec4(aCoordinates * 2.0 / 3.0, 1.0))).xyz;' +
             '}';
     }
 
     _getFragCode() {
-        return 'varying mediump vec4 vColor;' +
+        return 'precision mediump float;' +
+            'varying vec4 vColor;' +
+            'varying vec3 vNormal;' +
+            'varying vec3 vPosition;' +
+            'uniform vec3 uLightConstant;' +       // It represents the light color
+            'uniform float uAmbientIntensity;' +   // It represents the light intensity
+            // '// uniform vec3 uLightDirection;' +
+            'uniform vec3 uLightPosition;' +
+            // '//uniform mat3 uNormalModel;' +
             'void main(void) {' +
-            ' gl_FragColor = vColor;' +
+            '    vec3 ambient = uLightConstant * uAmbientIntensity;' +
+            // '    // vec3 lightDirection = uLightDirection;' +
+            '    vec3 lightDirection = uLightPosition - vPosition;' +
+            '    vec3 normalizedLight = normalize(lightDirection);' +  // [2., 0., 0.] becomes a unit vector [1., 0., 0.]' +
+            // '    //vec3 normalizedNormal = normalize(uNormalModel * vNormal);' +
+            '    vec3 normalizedNormal = normalize(vNormal);' +
+            '    float cosTheta = dot(normalizedNormal, normalizedLight);' +
+            '    vec3 diffuse = vec3(0., 0., 0.);' +
+            '    if (cosTheta > 0.) {' +
+            '        float diffuseIntensity = cosTheta;' +
+            '        diffuse = uLightConstant * diffuseIntensity;' +
+            '    }' +
+            // '    vec3 phong = ambient + diffuse + specular;' +
+            '    vec3 phong = ambient + diffuse;' +
+            '    gl_FragColor = vec4(phong.x * vColor.x, phong.y * vColor.y, phong.z * vColor.z, vColor.w);' +
             '}';
     }
 
     _bindAttributes() {
         this._bindVertexBuffer();
         this._bindColorBuffer();
+        this._bindNormalBuffer();
     }
 
     _bindVertexBuffer() {
@@ -146,22 +190,49 @@ export class Scene {
         );
     }
 
+    _bindNormalBuffer() {
+        this.webGlUtils.bindAttributes(
+            BufferTypeEnum.ARRAY,
+            this.normal_buffer,
+            'aNormal',
+            3,
+            DataTypeEnum.FLOAT
+        );
+    }
+
     _bindUniforms() {
-        this.webGlUtils.bindUniforms(
+        this.webGlUtils.bindMatrixUniforms(
             'uProjectionMatrix',
             DataTypeEnum.FLOAT,
             this.projectionMatrix
         )
-        this.webGlUtils.bindUniforms(
+        this.webGlUtils.bindMatrixUniforms(
             'uViewMatrix',
             DataTypeEnum.FLOAT,
             this.viewMatrix
         )
-        this.webGlUtils.bindUniforms(
+        this.webGlUtils.bindMatrixUniforms(
             'uRotationMatrix',
             DataTypeEnum.FLOAT,
             this.movementMatrix
         )
+        this.webGlUtils.bindUniforms3f(
+            'uLightConstant',
+            [1.0, 1.0, 1.0]
+        )
+        this.webGlUtils.bindUniforms1f(
+            'uAmbientIntensity',
+            0.4
+        )
+        this.webGlUtils.bindUniforms3f(
+            'uLightPosition',
+            [20.0, 2.0, 2.0]
+        )
+        // this.webGlUtils.bindUniforms3f(
+        //     'uNormalModel',
+        //     DataTypeEnum.FLOAT,
+        //     this.movementMatrix
+        // )
     }
 
     animate() {
@@ -174,4 +245,5 @@ export class Scene {
         this.webGlUtils.enableBlending();
         this.webGlUtils.drawArray(DrawModeEnum.TRIANGLES, 0, this.vertices.length)
     }
+
 }

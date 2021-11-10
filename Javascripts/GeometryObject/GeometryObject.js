@@ -51,6 +51,24 @@ export class GeometryObject extends Geometry {
         return faceVertice;
     }
 
+    getNormals() {
+        let faceNormals = [];
+        for(let geometry = 0; geometry < this.geometries.length; geometry++){
+            faceNormals.push(...this.geometries[geometry].getNormals());
+        }
+        if (this.rotation != null) {
+            for (let vert = 0; vert < faceNormals.length; vert++) {
+                let point = [faceNormals[vert].x - this.position.x, faceNormals[vert].y - this.position.y, faceNormals[vert].z - this.position.z];
+                let result = math.multiply(this.rotation_matrix, point);
+                result = math.add(result, this.position.toArray())
+                faceNormals[vert].setX(result[0]);
+                faceNormals[vert].setY(result[1]);
+                faceNormals[vert].setZ(result[2]);
+            }
+        }
+        return faceNormals;
+    }
+
     getColors() {
         let colors = [];
         this.geometries.forEach((geometry) => {

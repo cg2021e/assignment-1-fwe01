@@ -14,9 +14,8 @@ export class RegularPolygonPrism extends Geometry {
             this.upperRadius = upperRadius;
         }
         this.initVertices();
-        if (this.indices == null) {
-            this.initIndices();
-        }
+        this.initIndices();
+        this.initNormals();
     }
 
     initIndices() {
@@ -25,6 +24,7 @@ export class RegularPolygonPrism extends Geometry {
         this.initLowerFaceIndices();
         this.initSheetFaceIndices();
     }
+
 
     initUpperFaceIndices() {
         for (let vert = 1; vert < this.numberOfVertice; vert++) {

@@ -127,7 +127,25 @@ export class WebGLUtils {
         this.glContext.enableVertexAttribArray(attrib);
     }
 
-    bindUniforms(uniformName, dataType, data, transpose = false) {
+    bindUniforms1f(uniformName, data) {
+        if (this.shaderProgram == null) {
+            console.log('There is no active shader program');
+        }
+
+        let uniform = this.glContext.getUniformLocation(this.shaderProgram, uniformName);
+        this.glContext.uniform1f(uniform, data);
+    }
+
+    bindUniforms3f(uniformName, data) {
+        if (this.shaderProgram == null) {
+            console.log('There is no active shader program');
+        }
+
+        let uniform = this.glContext.getUniformLocation(this.shaderProgram, uniformName);
+        this.glContext.uniform3fv(uniform, data);
+    }
+
+    bindMatrixUniforms(uniformName, dataType, data, transpose = false) {
         if (this.shaderProgram == null) {
             console.log('There is no active shader program');
         }
@@ -159,7 +177,10 @@ export class WebGLUtils {
         let shader = this.glContext.createShader(shaderType);
         this.glContext.shaderSource(shader, shaderCode);
         this.glContext.compileShader(shader);
-
+        var compiled = this.glContext.getShaderParameter(shader, this.glContext.COMPILE_STATUS);
+        if (!compiled) {
+            console.error(this.glContext.getShaderInfoLog(shader));
+        }
         return shader;
     }
 
