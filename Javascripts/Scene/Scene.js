@@ -20,6 +20,8 @@ export class Scene {
         this._initProjectionMatrix();
         this._initViewMatrix();
         this._initMovementMatrix();
+        this._initLightSourcePosition();
+        this._initTranslate();
     }
 
     start() {
@@ -35,6 +37,14 @@ export class Scene {
 
     addGeometry(geometry) {
         this.geometries.push(geometry);
+    }
+
+    _initLightSourcePosition() {
+        this.lightSourcePosition = [0, 0, 0];
+    }
+
+    _initTranslate() {
+        this.translateMatrix = [0, 0, 0]
     }
 
     _initWebGlUtils(canvas) {
@@ -120,6 +130,7 @@ export class Scene {
         return 'attribute vec3 aCoordinates;' +
             'attribute vec4 aColor;' +
             'attribute vec3 aNormal;' +
+            'uniform vec3 uTranslate;' +
             'uniform mat4 uProjectionMatrix;' +
             'uniform mat4 uViewMatrix;' +
             'uniform mat4 uRotationMatrix;' +
@@ -127,11 +138,12 @@ export class Scene {
             'varying vec3 vNormal;' +
             'varying vec3 vPosition;' +
             'void main(void) {' +
-            ' gl_Position = uProjectionMatrix * uViewMatrix * uRotationMatrix * vec4(aCoordinates, 1.0);' +
+            ' gl_Position = uProjectionMatrix * uViewMatrix * uRotationMatrix * vec4(aCoordinates + uTranslate, 1.0);' +
             ' gl_PointSize = 18.0;' +
             ' vColor = aColor;' +
             ' vNormal = aNormal;' +
-            ' vPosition = (uRotationMatrix * (vec4(aCoordinates * 2.0 / 3.0, 1.0))).xyz;' +
+            // ' vPosition = (uRotationMatrix * (vec4(aCoordinates * 2.0 / 3.0, 1.0))).xyz;' + //Causes broken lightsource if world is rotated
+            ' vPosition = (vec4(aCoordinates * 2.0 / 3.0, 1.0)).xyz;' +
             '}';
     }
 
@@ -153,7 +165,7 @@ export class Scene {
             // '    //vec3 normalizedNormal = normalize(uNormalModel * vNormal);' +
             '    vec3 normalizedNormal = normalize(vNormal);' +
             '    float cosTheta = dot(normalizedNormal, normalizedLight);' +
-            '    vec3 diffuse = vec3(0., 0., 0.);' +
+            '    vec3 diffuse = vec3(0.1, 0.1, 0.1);' +
             '    if (cosTheta > 0.) {' +
             '        float diffuseIntensity = cosTheta;' +
             '        diffuse = uLightConstant * diffuseIntensity;' +
@@ -222,17 +234,16 @@ export class Scene {
         )
         this.webGlUtils.bindUniforms1f(
             'uAmbientIntensity',
-            0.4
+            0.216
         )
         this.webGlUtils.bindUniforms3f(
             'uLightPosition',
-            [20.0, 2.0, 2.0]
+            this.lightSourcePosition
         )
-        // this.webGlUtils.bindUniforms3f(
-        //     'uNormalModel',
-        //     DataTypeEnum.FLOAT,
-        //     this.movementMatrix
-        // )
+        this.webGlUtils.bindUniforms3f(
+            'uTranslate',
+            this.translateMatrix
+        )
     }
 
     animate() {
@@ -240,7 +251,7 @@ export class Scene {
     }
 
     _render() {
-        // webGlUtils.setBackgroundColor(0.5, 0.5, 0.5, 1.0);
+        this.webGlUtils.setBackgroundColor(0.5, 0.5, 0.5, 1.0);
         this.webGlUtils.enableDepthTest();
         this.webGlUtils.enableBlending();
         this.webGlUtils.drawArray(DrawModeEnum.TRIANGLES, 0, this.vertices.length)

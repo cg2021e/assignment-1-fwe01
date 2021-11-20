@@ -14,6 +14,7 @@ function drawBottle() {
     animate();
 
     document.addEventListener("click", onMouseClick);
+    document.addEventListener("keydown", onKeyDown);
 
     function animate() {
         scene.animate()
@@ -22,5 +23,9 @@ function drawBottle() {
 
     function onMouseClick() {
         scene._onMouseClick()
+    }
+
+    function onKeyDown(event) {
+        scene._onKeyDown(event)
     }
 }

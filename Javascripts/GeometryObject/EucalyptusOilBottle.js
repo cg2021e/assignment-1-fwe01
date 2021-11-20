@@ -21,7 +21,7 @@ export class EucalyptusOilBottle extends GeometryObject {
         0.41960784313725490196078431372549,
         0.57647058823529411764705882352941,
         0.1921568627450980392156862745098,
-        0.90
+        1
     )
     static LABELS_RED = new Color(
         157 / 255,

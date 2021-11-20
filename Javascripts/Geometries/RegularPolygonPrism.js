@@ -31,7 +31,20 @@ export class RegularPolygonPrism extends Geometry {
             this.addIndices([0, vert, vert + 1]);
         }
         //push last triangles
-        this.addIndices([0, 1, this.numberOfVertice]);
+        this.addIndices([
+            0,
+            this.numberOfVertice,
+            1,
+        ]);
+    }
+
+    translate(vector3) {
+        this.position.x += vector3.x;
+        this.position.y += vector3.y;
+        this.position.z += vector3.z;
+
+        this.initVertices();
+        this.initNormals();
     }
 
     initLowerFaceIndices() {
@@ -41,8 +54,8 @@ export class RegularPolygonPrism extends Geometry {
         //push last triangle
         this.addIndices([
             this.numberOfVertice + 1,
+            2 * this.numberOfVertice + 1,
             this.numberOfVertice + 2,
-            2 * this.numberOfVertice + 1
         ])
     }
 
@@ -73,9 +86,13 @@ export class RegularPolygonPrism extends Geometry {
             )
         )
 
+        let offset = 0;
+        if (this.numberOfVertice === 4) {
+            offset = 45;
+        }
         for (let degree = 0.0; degree < 360.0; degree += 360.0 / this.numberOfVertice) {
-            let cos = Math.cos(degree * Math.PI / 180.0);
-            let sin = Math.sin(degree * Math.PI / 180.0);
+            let cos = Math.cos((degree + offset) * Math.PI / 180.0);
+            let sin = Math.sin((degree + offset) * Math.PI / 180.0);
 
             this.addVertex(
                 new Vector3(
@@ -96,9 +113,13 @@ export class RegularPolygonPrism extends Geometry {
             )
         )
 
+        let offset = 0;
+        if (this.numberOfVertice === 4) {
+            offset = 45;
+        }
         for (let degree = 0.0; degree < 360.0; degree += 360.0 / this.numberOfVertice) {
-            let cos = Math.cos(degree * Math.PI / 180.0);
-            let sin = Math.sin(degree * Math.PI / 180.0);
+            let cos = Math.cos((degree + offset) * Math.PI / 180.0);
+            let sin = Math.sin((degree + offset) * Math.PI / 180.0);
 
             this.addVertex(
                 new Vector3(

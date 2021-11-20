@@ -22,14 +22,25 @@ export default class Geometry {
 
             let vector1 = new Vector3(point2.x - point1.x, point2.y - point1.y, point2.z - point1.z);
             let vector2 = new Vector3(point3.x - point1.x, point3.y - point1.y, point3.z - point1.z);
-
-            this.addNormals(
-                new Vector3(
-                    1000000 * ((vector1.y * vector2.z) - (vector1.z * vector2.y)),
-                    1000000 * ((vector1.z * vector2.x) - (vector1.x * vector2.z)),
-                    1000000 * ((vector1.x * vector2.y) - (vector1.y * vector2.x)),
+            if (point1.z === point2.z && point2.z === point3.z) {
+                this.addNormals(
+                    new Vector3(
+                        1000000 * ((vector2.y * vector1.z) - (vector2.z * vector1.y)),
+                        1000000 * ((vector2.z * vector1.x) - (vector2.x * vector1.z)),
+                        1000000 * ((vector2.x * vector1.y) - (vector2.y * vector1.x)),
+                    )
                 )
-            )
+            }
+            else {
+                this.addNormals(
+                    new Vector3(
+                        1000000 * ((vector1.y * vector2.z) - (vector1.z * vector2.y)),
+                        1000000 * ((vector1.z * vector2.x) - (vector1.x * vector2.z)),
+                        1000000 * ((vector1.x * vector2.y) - (vector1.y * vector2.x)),
+                    )
+                )
+            }
+
         }
         // console.log(this.normals);
     }
