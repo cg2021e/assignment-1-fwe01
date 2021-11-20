@@ -70,7 +70,7 @@ export default class Geometry {
                         Math.random(),
                         Math.random(),
                         Math.random(),
-                        0.8
+                        1
                     )
                 )
             } else {
