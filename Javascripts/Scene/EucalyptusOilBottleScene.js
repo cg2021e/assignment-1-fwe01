@@ -23,19 +23,23 @@ export class EucalyptusOilBottleScene extends Scene {
         this.left_bottle =
             new EucalyptusOilBottle(
                 new Vector3(-1, 0, 0),
+                45,
                 new Vector3(0, -65, -90),
             );
         this.right_bottle =
             new EucalyptusOilBottle(
                 new Vector3(1, 0, 0),
+                100,
                 new Vector3(-90, -45, 0),
             );
         this.lightsource_cube =
             new CubeLightSource(
                 new Vector3(0.0, 0.0, 0.0),
                 0.25,
-                new Color(1, 1, 1, 1.0)
-            );
+                new Color(1, 1, 1, 1.0),
+                1,
+    )
+        ;
         this.addGeometry(this.left_bottle);
         this.addGeometry(this.right_bottle);
         this.addGeometry(this.lightsource_cube);
@@ -81,6 +85,7 @@ export class EucalyptusOilBottleScene extends Scene {
 
     _update() {
         let vertexChanged = false;
+        let viewChanged = false;
 
         if (this.moveLightSourceUp) {
             this.lightsource_cube.translate(new Vector3(0, this.movementSpeed, 0));
@@ -95,12 +100,16 @@ export class EucalyptusOilBottleScene extends Scene {
             vertexChanged = true;
         }
         if (this.moveCameraLeft) {
-            this.translateMatrix[0] -= 0.01
+            this.camera[0] += 0.01
+            this.lookAt[0] += 0.01
             this.moveCameraLeft = false
+            viewChanged = true;
         }
         if (this.moveCameraRight) {
-            this.translateMatrix[0] += 0.01
+            this.camera[0] -= 0.01
+            this.lookAt[0] -= 0.01
             this.moveCameraRight = false
+            viewChanged = true;
         }
 
         if (vertexChanged) {
@@ -108,10 +117,15 @@ export class EucalyptusOilBottleScene extends Scene {
             this._bindVertexBuffer();
         }
 
+        if (viewChanged) {
+            this._initViewMatrix();
+            this._bindUniforms();
+        }
+
         if (this.rotateWorld) {
-            this.webGlUtils.rotateZ(this.movementMatrix, 0.002);
-            this.webGlUtils.rotateY(this.movementMatrix, 0.002);
-            this.webGlUtils.rotateX(this.movementMatrix, 0.002);
+            this.webGlUtils.rotateZ(this.rotationMatrix, 0.002);
+            this.webGlUtils.rotateY(this.rotationMatrix, 0.002);
+            this.webGlUtils.rotateX(this.rotationMatrix, 0.002);
         }
         this._bindUniforms();
     }

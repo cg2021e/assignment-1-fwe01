@@ -36,8 +36,8 @@ export class EucalyptusOilBottle extends GeometryObject {
         1
     )
 
-    constructor(position, rotation = null) {
-        super(position, rotation);
+    constructor(position, specular, rotation = null) {
+        super(position, specular, rotation);
         this._initGeometry();
     }
 

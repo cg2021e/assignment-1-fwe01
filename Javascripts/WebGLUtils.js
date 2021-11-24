@@ -145,7 +145,7 @@ export class WebGLUtils {
         this.glContext.uniform3fv(uniform, data);
     }
 
-    bindMatrixUniforms(uniformName, dataType, data, transpose = false) {
+    bindMatrix4Uniforms(uniformName, dataType, data, transpose = false) {
         if (this.shaderProgram == null) {
             console.log('There is no active shader program');
         }
@@ -162,6 +162,25 @@ export class WebGLUtils {
 
         let uniform = this.glContext.getUniformLocation(this.shaderProgram, uniformName);
         this.glContext.uniformMatrix4fv(uniform, transpose, matrixData);
+    }
+
+    bindMatrix3Uniforms(uniformName, dataType, data, transpose = false) {
+        if (this.shaderProgram == null) {
+            console.log('There is no active shader program');
+        }
+
+        let matrixData = null;
+        switch (dataType) {
+            case DataTypeEnum.INT:
+                matrixData = new Uint16Array(data);
+                break;
+            case DataTypeEnum.FLOAT :
+                matrixData = new Float32Array(data);
+                break;
+        }
+
+        let uniform = this.glContext.getUniformLocation(this.shaderProgram, uniformName);
+        this.glContext.uniformMatrix3fv(uniform, transpose, matrixData);
     }
 
     createShader(type, shaderCode) {

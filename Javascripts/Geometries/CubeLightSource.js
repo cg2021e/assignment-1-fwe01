@@ -3,10 +3,10 @@ import Geometry from "./Geometry.js";
 import {Vector3} from "./Vector3.js";
 
 export class CubeLightSource extends Geometry {
-
-    constructor(position, side, color) {
+    constructor(position, side, color,specular) {
         super(color);
         this.side = side;
+        this.specular = specular;
         this.halfSide = side * 0.5;
         this.position = position;
         this.initVertices();
@@ -60,25 +60,30 @@ export class CubeLightSource extends Geometry {
 
     initNormals() {
         this.normals = [];
-        this.addNormals(new Vector3(this.position.x + 0, this.position.y + 0, this.position.z + -1))
-        this.addNormals(new Vector3(this.position.x + 0, this.position.y + 0, this.position.z + -1))
-        this.addNormals(new Vector3(this.position.x + 0, this.position.y + -1, this.position.z + 0))
-        this.addNormals(new Vector3(this.position.x + 0, this.position.y + -1, this.position.z + 0))
-        this.addNormals(new Vector3(this.position.x + -1, this.position.y + 0, this.position.z + 0))
-        this.addNormals(new Vector3(this.position.x + -1, this.position.y + 0, this.position.z + 0))
-        this.addNormals(new Vector3(this.position.x + 0, this.position.y + 0, this.position.z + 1))
-        this.addNormals(new Vector3(this.position.x + 0, this.position.y + 0, this.position.z + 1))
-        this.addNormals(new Vector3(this.position.x + 1, this.position.y + 0, this.position.z + 0))
-        this.addNormals(new Vector3(this.position.x + 1, this.position.y + 0, this.position.z + 0))
-        this.addNormals(new Vector3(this.position.x + 0, this.position.y + 1, this.position.z + 0))
-        this.addNormals(new Vector3(this.position.x + 0, this.position.y + 1, this.position.z + 0))
+        this.addNormals(new Vector3(this.position.x, this.position.y, this.position.z - 1))
+        this.addNormals(new Vector3(this.position.x, this.position.y, this.position.z - 1))
+        this.addNormals(new Vector3(this.position.x, this.position.y - 1, this.position.z))
+        this.addNormals(new Vector3(this.position.x, this.position.y - 1, this.position.z))
+        this.addNormals(new Vector3(this.position.x - 1, this.position.y, this.position.z))
+        this.addNormals(new Vector3(this.position.x - 1, this.position.y, this.position.z))
+        this.addNormals(new Vector3(this.position.x, this.position.y, this.position.z + 1))
+        this.addNormals(new Vector3(this.position.x, this.position.y, this.position.z + 1))
+        this.addNormals(new Vector3(this.position.x + 1, this.position.y, this.position.z))
+        this.addNormals(new Vector3(this.position.x + 1, this.position.y, this.position.z))
+        this.addNormals(new Vector3(this.position.x, this.position.y + 1, this.position.z))
+        this.addNormals(new Vector3(this.position.x, this.position.y + 1, this.position.z))
     }
 
     getNormals() {
-        let faceNormals = [];
+        this.faceNormals = [];
         for (let index = 0; index < this.indices.length; index++) {
-            faceNormals.push(Vector3.copyVector3(this.normals[Math.floor(index / 3)]));
+            this.faceNormals.push(Vector3.copyVector3(this.normals[Math.floor(index / 3)]));
         }
-        return faceNormals;
+        return this.faceNormals;
+    }
+
+    getSpecular() {
+        let specular = Array(this.faceNormals.length).fill(this.specular)
+        return specular;
     }
 }

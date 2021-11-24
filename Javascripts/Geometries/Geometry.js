@@ -61,6 +61,9 @@ export default class Geometry {
         return faceNormals;
     }
 
+    getSpecular(){
+    }
+
     getColors() {
         let colors = [];
         this.indices.forEach((value) => {

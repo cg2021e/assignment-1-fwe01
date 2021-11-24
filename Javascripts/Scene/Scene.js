@@ -7,19 +7,21 @@ export class Scene {
     webGlUtils = null;
     projectionMatrix = null;
     viewMatrix = null;
-    movementMatrix = null;
+    rotationMatrix = null;
     vertices = null;
     colors = null;
 
     vertex_buffer = null;
     color_buffer = null;
     normal_buffer = null;
+    camera = [0, 0, 3];
+    lookAt = [0, 0, 0];
 
     constructor(canvas) {
         this._initWebGlUtils(canvas);
         this._initProjectionMatrix();
         this._initViewMatrix();
-        this._initMovementMatrix();
+        this._initRotationMatrix();
         this._initLightSourcePosition();
         this._initTranslate();
     }
@@ -28,6 +30,7 @@ export class Scene {
         this._initVerticesBuffer();
         this._initColorsBuffer();
         this._initNormalsBuffer();
+        this._initSpecularBuffer();
         this._startProgram();
         this._bindAttributes();
         this._bindUniforms();
@@ -56,17 +59,17 @@ export class Scene {
     }
 
     _initViewMatrix() {
-        this.viewMatrix = [
-            1, 0, 0, 0,
-            0, 1, 0, 0,
-            0, 0, 1, 0,
-            0, 0, 0, 1,
-        ];
-        this.viewMatrix[14] = this.viewMatrix[14] - 5;
+        this.view = glMatrix.mat4.create();
+        glMatrix.mat4.lookAt(
+            this.view,
+            this.camera,      // camera position
+            this.lookAt,      // the point where camera looks at
+            [0, 1, 0]       // up vector of the camera
+        );
     }
 
-    _initMovementMatrix() {
-        this.movementMatrix = [
+    _initRotationMatrix() {
+        this.rotationMatrix = [
             1, 0, 0, 0,
             0, 1, 0, 0,
             0, 0, 1, 0,
@@ -116,6 +119,19 @@ export class Scene {
         );
     }
 
+    _initSpecularBuffer() {
+        this.specular = [];
+        for (let geometry = 0; geometry < this.geometries.length; geometry++) {
+            this.specular.push(...this.geometries[geometry].getSpecular());
+        }
+        this.specular_buffer = this.webGlUtils.initBuffer(
+            BufferTypeEnum.ARRAY,
+            DataTypeEnum.FLOAT,
+            this.specular,
+            UsageTypeEnum.STATIC
+        );
+    }
+
     _startProgram() {
         let vertCode = this._getVertCode();
         let vertShader = this.webGlUtils.createShader(ShaderTypeEnum.VERTEX, vertCode);
@@ -130,6 +146,7 @@ export class Scene {
         return 'attribute vec3 aCoordinates;' +
             'attribute vec4 aColor;' +
             'attribute vec3 aNormal;' +
+            'attribute float aShininessConstant;' +
             'uniform vec3 uTranslate;' +
             'uniform mat4 uProjectionMatrix;' +
             'uniform mat4 uViewMatrix;' +
@@ -137,13 +154,14 @@ export class Scene {
             'varying vec4 vColor;' +
             'varying vec3 vNormal;' +
             'varying vec3 vPosition;' +
+            'varying float vShininessConstant;' +
             'void main(void) {' +
-            ' gl_Position = uProjectionMatrix * uViewMatrix * uRotationMatrix * vec4(aCoordinates + uTranslate, 1.0);' +
+            ' gl_Position = uProjectionMatrix * uViewMatrix * uRotationMatrix * vec4(aCoordinates + uTranslate, 1.8);' +
             ' gl_PointSize = 18.0;' +
             ' vColor = aColor;' +
             ' vNormal = aNormal;' +
-            // ' vPosition = (uRotationMatrix * (vec4(aCoordinates * 2.0 / 3.0, 1.0))).xyz;' + //Causes broken lightsource if world is rotated
-            ' vPosition = (vec4(aCoordinates * 2.0 / 3.0, 1.0)).xyz;' +
+            ' vShininessConstant = aShininessConstant;' +
+            ' vPosition = (uRotationMatrix * (vec4(aCoordinates * 2.0 / 3.0, 1.0))).xyz;' +
             '}';
     }
 
@@ -152,27 +170,34 @@ export class Scene {
             'varying vec4 vColor;' +
             'varying vec3 vNormal;' +
             'varying vec3 vPosition;' +
+            'varying float vShininessConstant;' +
             'uniform vec3 uLightConstant;' +       // It represents the light color
+            'uniform vec3 uCameraPosition;' +
             'uniform float uAmbientIntensity;' +   // It represents the light intensity
-            // '// uniform vec3 uLightDirection;' +
             'uniform vec3 uLightPosition;' +
-            // '//uniform mat3 uNormalModel;' +
+            'uniform mat3 uNormalRotation;' +
             'void main(void) {' +
-            '    vec3 ambient = uLightConstant * uAmbientIntensity;' +
-            // '    // vec3 lightDirection = uLightDirection;' +
-            '    vec3 lightDirection = uLightPosition - vPosition;' +
-            '    vec3 normalizedLight = normalize(lightDirection);' +  // [2., 0., 0.] becomes a unit vector [1., 0., 0.]' +
-            // '    //vec3 normalizedNormal = normalize(uNormalModel * vNormal);' +
-            '    vec3 normalizedNormal = normalize(vNormal);' +
-            '    float cosTheta = dot(normalizedNormal, normalizedLight);' +
-            '    vec3 diffuse = vec3(0.1, 0.1, 0.1);' +
-            '    if (cosTheta > 0.) {' +
-            '        float diffuseIntensity = cosTheta;' +
-            '        diffuse = uLightConstant * diffuseIntensity;' +
-            '    }' +
-            // '    vec3 phong = ambient + diffuse + specular;' +
-            '    vec3 phong = ambient + diffuse;' +
-            '    gl_FragColor = vec4(phong.x * vColor.x, phong.y * vColor.y, phong.z * vColor.z, vColor.w);' +
+            '   vec3 ambient = uLightConstant * uAmbientIntensity;' +
+            '   vec3 lightDirection = uLightPosition - vPosition;' +
+            '   vec3 normalizedLight = normalize(lightDirection);' +  // [2., 0., 0.] becomes a unit vector [1., 0., 0.]' +
+            '   vec3 normalizedNormal = normalize(uNormalRotation * vNormal);' +
+            '   float cosTheta = dot(normalizedNormal, normalizedLight);' +
+            '   vec3 diffuse = vec3(0, 0, 0);' +
+            '   if (cosTheta > 0.) {' +
+            '       float diffuseIntensity = cosTheta;' +
+            '       diffuse = uLightConstant * diffuseIntensity;' +
+            '   }' +
+            '   vec3 reflector = reflect(-lightDirection, normalizedNormal);' +
+            '   vec3 normalizedReflector = normalize(reflector);' +
+            '   vec3 normalizedViewer = normalize(uCameraPosition * vPosition);' +
+            '   float cosPhi = dot(normalizedReflector, normalizedViewer);' +
+            '   vec3 specular = vec3(0., 0., 0.);' +
+            '   if (cosPhi > 0.) {' +
+            '       float specularIntensity = pow(cosPhi, vShininessConstant);' +
+            '       specular = uLightConstant * specularIntensity;' +
+            '   }' +
+            '   vec3 phong = ambient + diffuse + specular;' +
+            '   gl_FragColor = vec4(phong.x * vColor.x, phong.y * vColor.y, phong.z * vColor.z, vColor.w);' +
             '}';
     }
 
@@ -180,6 +205,7 @@ export class Scene {
         this._bindVertexBuffer();
         this._bindColorBuffer();
         this._bindNormalBuffer();
+        this._bindSpecularBuffer();
     }
 
     _bindVertexBuffer() {
@@ -212,21 +238,31 @@ export class Scene {
         );
     }
 
+    _bindSpecularBuffer() {
+        this.webGlUtils.bindAttributes(
+            BufferTypeEnum.ARRAY,
+            this.specular_buffer,
+            'aShininessConstant',
+            1,
+            DataTypeEnum.FLOAT
+        );
+    }
+
     _bindUniforms() {
-        this.webGlUtils.bindMatrixUniforms(
+        this.webGlUtils.bindMatrix4Uniforms(
             'uProjectionMatrix',
             DataTypeEnum.FLOAT,
             this.projectionMatrix
         )
-        this.webGlUtils.bindMatrixUniforms(
+        this.webGlUtils.bindMatrix4Uniforms(
             'uViewMatrix',
             DataTypeEnum.FLOAT,
-            this.viewMatrix
+            this.view
         )
-        this.webGlUtils.bindMatrixUniforms(
+        this.webGlUtils.bindMatrix4Uniforms(
             'uRotationMatrix',
             DataTypeEnum.FLOAT,
-            this.movementMatrix
+            this.rotationMatrix
         )
         this.webGlUtils.bindUniforms3f(
             'uLightConstant',
@@ -243,6 +279,18 @@ export class Scene {
         this.webGlUtils.bindUniforms3f(
             'uTranslate',
             this.translateMatrix
+        )
+        this.webGlUtils.bindUniforms3f(
+            'uCameraPosition',
+            this.camera
+        )
+
+        let uNormalRotation = glMatrix.mat3.create()
+        glMatrix.mat3.normalFromMat4(uNormalRotation, this.rotationMatrix);
+        this.webGlUtils.bindMatrix3Uniforms(
+            'uNormalRotation',
+            DataTypeEnum.FLOAT,
+            uNormalRotation
         )
     }
 

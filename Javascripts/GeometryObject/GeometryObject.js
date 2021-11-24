@@ -1,11 +1,12 @@
 import Geometry from "../Geometries/Geometry.js";
 
 export class GeometryObject extends Geometry {
-    constructor(position, rotation = null) {
+    constructor(position, specular, rotation = null) {
         super();
         this.geometries = [];
         this.position = position;
         this.rotation = rotation;
+        this.specular = specular;
         if (rotation != null) {
             this._initRotationMatrix();
         }
@@ -34,39 +35,44 @@ export class GeometryObject extends Geometry {
     }
 
     getVertices() {
-        let faceVertice = [];
+        this.faceVertice = [];
         for (let geometry = 0; geometry < this.geometries.length; geometry++) {
-            faceVertice.push(...this.geometries[geometry].getVertices());
+            this.faceVertice.push(...this.geometries[geometry].getVertices());
         }
         if (this.rotation != null) {
-            for (let vert = 0; vert < faceVertice.length; vert++) {
-                let point = [faceVertice[vert].x - this.position.x, faceVertice[vert].y - this.position.y, faceVertice[vert].z - this.position.z];
+            for (let vert = 0; vert < this.faceVertice.length; vert++) {
+                let point = [this.faceVertice[vert].x - this.position.x, this.faceVertice[vert].y - this.position.y, this.faceVertice[vert].z - this.position.z];
                 let result = math.multiply(this.rotation_matrix, point);
                 result = math.add(result, this.position.toArray())
-                faceVertice[vert].setX(result[0]);
-                faceVertice[vert].setY(result[1]);
-                faceVertice[vert].setZ(result[2]);
+                this.faceVertice[vert].setX(result[0]);
+                this.faceVertice[vert].setY(result[1]);
+                this.faceVertice[vert].setZ(result[2]);
             }
         }
-        return faceVertice;
+        return this.faceVertice;
     }
 
     getNormals() {
-        let faceNormals = [];
+        this.faceNormals = [];
         for (let geometry = 0; geometry < this.geometries.length; geometry++) {
-            faceNormals.push(...this.geometries[geometry].getNormals());
+            this.faceNormals.push(...this.geometries[geometry].getNormals());
         }
         if (this.rotation != null) {
-            for (let vert = 0; vert < faceNormals.length; vert++) {
-                let point = [faceNormals[vert].x - this.position.x, faceNormals[vert].y - this.position.y, faceNormals[vert].z - this.position.z];
+            for (let vert = 0; vert < this.faceNormals.length; vert++) {
+                let point = [this.faceNormals[vert].x - this.position.x, this.faceNormals[vert].y - this.position.y, this.faceNormals[vert].z - this.position.z];
                 let result = math.multiply(this.rotation_matrix, point);
                 result = math.add(result, this.position.toArray())
-                faceNormals[vert].setX(result[0]);
-                faceNormals[vert].setY(result[1]);
-                faceNormals[vert].setZ(result[2]);
+                this.faceNormals[vert].setX(result[0]);
+                this.faceNormals[vert].setY(result[1]);
+                this.faceNormals[vert].setZ(result[2]);
             }
         }
-        return faceNormals;
+        return this.faceNormals;
+    }
+
+    getSpecular() {
+        let specular = Array(this.faceVertice.length).fill(this.specular)
+        return specular;
     }
 
     getColors() {
