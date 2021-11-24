@@ -38,8 +38,7 @@ export class EucalyptusOilBottleScene extends Scene {
                 0.25,
                 new Color(1, 1, 1, 1.0),
                 1,
-    )
-        ;
+            );
         this.addGeometry(this.left_bottle);
         this.addGeometry(this.right_bottle);
         this.addGeometry(this.lightsource_cube);
