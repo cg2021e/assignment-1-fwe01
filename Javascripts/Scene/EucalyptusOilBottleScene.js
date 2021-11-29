@@ -113,12 +113,13 @@ export class EucalyptusOilBottleScene extends Scene {
 
         if (vertexChanged) {
             this._initVerticesBuffer();
+            this._initNormalsBuffer();
             this._bindVertexBuffer();
+            this._bindNormalBuffer();
         }
 
         if (viewChanged) {
             this._initViewMatrix();
-            this._bindUniforms();
         }
 
         if (this.rotateWorld) {

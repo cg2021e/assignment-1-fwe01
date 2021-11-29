@@ -55,7 +55,7 @@ export class Scene {
     }
 
     _initProjectionMatrix() {
-        this.projectionMatrix = this.webGlUtils.getProjection(30, 1, 10);
+        this.projectionMatrix = this.webGlUtils.getProjection(45, 1, 10);
     }
 
     _initViewMatrix() {
@@ -153,15 +153,15 @@ export class Scene {
             'uniform mat4 uRotationMatrix;' +
             'varying vec4 vColor;' +
             'varying vec3 vNormal;' +
-            'varying vec3 vPosition;' +
+            'varying vec3 vCoordinates;' +
             'varying float vShininessConstant;' +
             'void main(void) {' +
-            ' gl_Position = uProjectionMatrix * uViewMatrix * uRotationMatrix * vec4(aCoordinates + uTranslate, 1.8);' +
+            ' gl_Position = uProjectionMatrix * uViewMatrix * uRotationMatrix * vec4(aCoordinates + uTranslate, 1.0);' +
             ' gl_PointSize = 18.0;' +
             ' vColor = aColor;' +
             ' vNormal = aNormal;' +
             ' vShininessConstant = aShininessConstant;' +
-            ' vPosition = (uRotationMatrix * (vec4(aCoordinates * 2.0 / 3.0, 1.0))).xyz;' +
+            ' vCoordinates = (uRotationMatrix * (vec4(aCoordinates, 1.0))).xyz;' +
             '}';
     }
 
@@ -169,7 +169,7 @@ export class Scene {
         return 'precision mediump float;' +
             'varying vec4 vColor;' +
             'varying vec3 vNormal;' +
-            'varying vec3 vPosition;' +
+            'varying vec3 vCoordinates;' +
             'varying float vShininessConstant;' +
             'uniform vec3 uLightConstant;' +       // It represents the light color
             'uniform vec3 uCameraPosition;' +
@@ -178,7 +178,7 @@ export class Scene {
             'uniform mat3 uNormalRotation;' +
             'void main(void) {' +
             '   vec3 ambient = uLightConstant * uAmbientIntensity;' +
-            '   vec3 lightDirection = uLightPosition - vPosition;' +
+            '   vec3 lightDirection = (uNormalRotation * uLightPosition) - vCoordinates;' +
             '   vec3 normalizedLight = normalize(lightDirection);' +  // [2., 0., 0.] becomes a unit vector [1., 0., 0.]' +
             '   vec3 normalizedNormal = normalize(uNormalRotation * vNormal);' +
             '   float cosTheta = dot(normalizedNormal, normalizedLight);' +
@@ -189,7 +189,7 @@ export class Scene {
             '   }' +
             '   vec3 reflector = reflect(-lightDirection, normalizedNormal);' +
             '   vec3 normalizedReflector = normalize(reflector);' +
-            '   vec3 normalizedViewer = normalize(uCameraPosition * vPosition);' +
+            '   vec3 normalizedViewer = normalize(uCameraPosition * vCoordinates);' +
             '   float cosPhi = dot(normalizedReflector, normalizedViewer);' +
             '   vec3 specular = vec3(0., 0., 0.);' +
             '   if (cosPhi > 0.) {' +

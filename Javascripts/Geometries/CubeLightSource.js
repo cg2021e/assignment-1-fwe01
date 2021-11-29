@@ -60,18 +60,18 @@ export class CubeLightSource extends Geometry {
 
     initNormals() {
         this.normals = [];
-        this.addNormals(new Vector3(this.position.x, this.position.y, this.position.z - 1))
-        this.addNormals(new Vector3(this.position.x, this.position.y, this.position.z - 1))
-        this.addNormals(new Vector3(this.position.x, this.position.y - 1, this.position.z))
-        this.addNormals(new Vector3(this.position.x, this.position.y - 1, this.position.z))
-        this.addNormals(new Vector3(this.position.x - 1, this.position.y, this.position.z))
-        this.addNormals(new Vector3(this.position.x - 1, this.position.y, this.position.z))
-        this.addNormals(new Vector3(this.position.x, this.position.y, this.position.z + 1))
-        this.addNormals(new Vector3(this.position.x, this.position.y, this.position.z + 1))
-        this.addNormals(new Vector3(this.position.x + 1, this.position.y, this.position.z))
-        this.addNormals(new Vector3(this.position.x + 1, this.position.y, this.position.z))
-        this.addNormals(new Vector3(this.position.x, this.position.y + 1, this.position.z))
-        this.addNormals(new Vector3(this.position.x, this.position.y + 1, this.position.z))
+        this.addNormals(new Vector3(this.position.x, this.position.y, this.position.z - 1000))
+        this.addNormals(new Vector3(this.position.x, this.position.y, this.position.z - 1000))
+        this.addNormals(new Vector3(this.position.x, this.position.y - 1000, this.position.z))
+        this.addNormals(new Vector3(this.position.x, this.position.y - 1000, this.position.z))
+        this.addNormals(new Vector3(this.position.x - 1000, this.position.y, this.position.z))
+        this.addNormals(new Vector3(this.position.x - 1000, this.position.y, this.position.z))
+        this.addNormals(new Vector3(this.position.x, this.position.y, this.position.z + 1000))
+        this.addNormals(new Vector3(this.position.x, this.position.y, this.position.z + 1000))
+        this.addNormals(new Vector3(this.position.x + 1000, this.position.y, this.position.z))
+        this.addNormals(new Vector3(this.position.x + 1000, this.position.y, this.position.z))
+        this.addNormals(new Vector3(this.position.x, this.position.y + 1000, this.position.z))
+        this.addNormals(new Vector3(this.position.x, this.position.y + 1000, this.position.z))
     }
 
     getNormals() {
