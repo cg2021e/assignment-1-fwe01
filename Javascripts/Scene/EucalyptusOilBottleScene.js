@@ -99,14 +99,14 @@ export class EucalyptusOilBottleScene extends Scene {
             vertexChanged = true;
         }
         if (this.moveCameraLeft) {
-            this.camera[0] += 0.01
-            this.lookAt[0] += 0.01
+            this.camera[0] -= 0.01
+            this.lookAt[0] -= 0.01
             this.moveCameraLeft = false
             viewChanged = true;
         }
         if (this.moveCameraRight) {
-            this.camera[0] -= 0.01
-            this.lookAt[0] -= 0.01
+            this.camera[0] += 0.01
+            this.lookAt[0] += 0.01
             this.moveCameraRight = false
             viewChanged = true;
         }
