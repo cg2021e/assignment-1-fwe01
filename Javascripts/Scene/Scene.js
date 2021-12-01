@@ -189,7 +189,7 @@ export class Scene {
             '   }' +
             '   vec3 reflector = reflect(-lightDirection, normalizedNormal);' +
             '   vec3 normalizedReflector = normalize(reflector);' +
-            '   vec3 normalizedViewer = normalize(uCameraPosition * vCoordinates);' +
+            '   vec3 normalizedViewer = normalize(uCameraPosition - vCoordinates);' +
             '   float cosPhi = dot(normalizedReflector, normalizedViewer);' +
             '   vec3 specular = vec3(0., 0., 0.);' +
             '   if (cosPhi > 0.) {' +
