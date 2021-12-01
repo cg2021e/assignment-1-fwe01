@@ -11,7 +11,6 @@ export class EucalyptusOilBottleScene extends Scene {
     constructor(canvas) {
         super(canvas);
         this._initGeometries();
-        this.addY = 0.0016;
         this.moveLightSourceUp = false;
         this.moveLightSourceDown = false;
         this.moveCameraLeft = false;
@@ -23,13 +22,13 @@ export class EucalyptusOilBottleScene extends Scene {
         this.left_bottle =
             new EucalyptusOilBottle(
                 new Vector3(-1, 0, 0),
-                45,
+                95,
                 new Vector3(0, -65, -90),
             );
         this.right_bottle =
             new EucalyptusOilBottle(
                 new Vector3(1, 0, 0),
-                100,
+                15,
                 new Vector3(-90, -45, 0),
             );
         this.lightsource_cube =
