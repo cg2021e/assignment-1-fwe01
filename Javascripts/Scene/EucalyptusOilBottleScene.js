@@ -22,13 +22,13 @@ export class EucalyptusOilBottleScene extends Scene {
         this.left_bottle =
             new EucalyptusOilBottle(
                 new Vector3(-1, 0, 0),
-                95,
+                8,
                 new Vector3(0, -65, -90),
             );
         this.right_bottle =
             new EucalyptusOilBottle(
                 new Vector3(1, 0, 0),
-                15,
+                150,
                 new Vector3(-90, -45, 0),
             );
         this.lightsource_cube =
