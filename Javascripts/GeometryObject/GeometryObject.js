@@ -7,6 +7,8 @@ export class GeometryObject extends Geometry {
         this.position = position;
         this.rotation = rotation;
         this.specular = specular;
+        this.verticeChanged = true;
+        this.normalChanged = true;
         if (rotation != null) {
             this._initRotationMatrix();
         }
@@ -19,6 +21,7 @@ export class GeometryObject extends Geometry {
     setRotation(rotation) {
         this.rotation = rotation;
         this._initRotationMatrix();
+        this._markChanged();
     }
 
     rotate(vector3) {
@@ -26,46 +29,54 @@ export class GeometryObject extends Geometry {
         this.rotation.y += vector3.y;
         this.rotation.z += vector3.z;
         this._initRotationMatrix();
+        this._markChanged();
     }
 
     translate(vector3) {
         this.position.x += vector3.x;
         this.position.y += vector3.y;
         this.position.z += vector3.z;
+        this._markChanged();
     }
 
     getVertices() {
-        this.faceVertice = [];
-        for (let geometry = 0; geometry < this.geometries.length; geometry++) {
-            this.faceVertice.push(...this.geometries[geometry].getVertices());
-        }
-        if (this.rotation != null) {
-            for (let vert = 0; vert < this.faceVertice.length; vert++) {
-                let point = [this.faceVertice[vert].x - this.position.x, this.faceVertice[vert].y - this.position.y, this.faceVertice[vert].z - this.position.z];
-                let result = math.multiply(this.rotation_matrix, point);
-                result = math.add(result, this.position.toArray())
-                this.faceVertice[vert].setX(result[0]);
-                this.faceVertice[vert].setY(result[1]);
-                this.faceVertice[vert].setZ(result[2]);
+        if (this.verticeChanged) {
+            this.faceVertice = [];
+            for (let geometry = 0; geometry < this.geometries.length; geometry++) {
+                this.faceVertice.push(...this.geometries[geometry].getVertices());
             }
+            if (this.rotation != null) {
+                for (let vert = 0; vert < this.faceVertice.length; vert++) {
+                    let point = [this.faceVertice[vert].x - this.position.x, this.faceVertice[vert].y - this.position.y, this.faceVertice[vert].z - this.position.z];
+                    let result = math.multiply(this.rotation_matrix, point);
+                    result = math.add(result, this.position.toArray())
+                    this.faceVertice[vert].setX(result[0]);
+                    this.faceVertice[vert].setY(result[1]);
+                    this.faceVertice[vert].setZ(result[2]);
+                }
+            }
+            this.verticeChanged = false;
         }
         return this.faceVertice;
     }
 
     getNormals() {
-        this.faceNormals = [];
-        for (let geometry = 0; geometry < this.geometries.length; geometry++) {
-            this.faceNormals.push(...this.geometries[geometry].getNormals());
-        }
-        if (this.rotation != null) {
-            for (let vert = 0; vert < this.faceNormals.length; vert++) {
-                let point = [this.faceNormals[vert].x - this.position.x, this.faceNormals[vert].y - this.position.y, this.faceNormals[vert].z - this.position.z];
-                let result = math.multiply(this.rotation_matrix, point);
-                result = math.add(result, this.position.toArray())
-                this.faceNormals[vert].setX(result[0]);
-                this.faceNormals[vert].setY(result[1]);
-                this.faceNormals[vert].setZ(result[2]);
+        if (this.normalChanged) {
+            this.faceNormals = [];
+            for (let geometry = 0; geometry < this.geometries.length; geometry++) {
+                this.faceNormals.push(...this.geometries[geometry].getNormals());
             }
+            if (this.rotation != null) {
+                for (let vert = 0; vert < this.faceNormals.length; vert++) {
+                    let point = [this.faceNormals[vert].x - this.position.x, this.faceNormals[vert].y - this.position.y, this.faceNormals[vert].z - this.position.z];
+                    let result = math.multiply(this.rotation_matrix, point);
+                    result = math.add(result, this.position.toArray())
+                    this.faceNormals[vert].setX(result[0]);
+                    this.faceNormals[vert].setY(result[1]);
+                    this.faceNormals[vert].setZ(result[2]);
+                }
+            }
+            this.normalChanged = false;
         }
         return this.faceNormals;
     }
@@ -95,5 +106,9 @@ export class GeometryObject extends Geometry {
             [sin_alpha * cos_beta, sin_alpha * sin_beta * sin_gamma + cos_alpha * cos_gamma, sin_alpha * sin_beta * cos_gamma - cos_alpha * sin_gamma],
             [-1 * sin_beta, cos_beta * sin_gamma, cos_beta * cos_gamma],
         ];
+    }
+
+    _markChanged() {
+        this.normalChanged = this.verticeChanged = true;
     }
 }
