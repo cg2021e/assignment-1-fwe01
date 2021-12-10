@@ -14,11 +14,13 @@ export class Scene {
     vertex_buffer = null;
     color_buffer = null;
     normal_buffer = null;
-    camera = [0, 0, 3];
+    camera = null;
     lookAt = [0, 0, 0];
     lightsOut = 0;
 
     constructor(canvas) {
+        this.cameraDistance = 3;
+        this.cameraOrbit = 90;
         this._initWebGlUtils(canvas);
         this._initProjectionMatrix();
         this._initViewMatrix();
@@ -56,10 +58,13 @@ export class Scene {
     }
 
     _initProjectionMatrix() {
-        this.projectionMatrix = this.webGlUtils.getProjection(45, 1, 10);
+        this.projectionMatrix = this.webGlUtils.getProjection(45, 0.1, 100);
     }
 
     _initViewMatrix() {
+        let cos = Math.cos((this.cameraOrbit) * Math.PI / 180.0);
+        let sin = Math.sin((this.cameraOrbit) * Math.PI / 180.0);
+        this.camera = [this.cameraDistance * cos, 0, this.cameraDistance * sin];
         this.view = glMatrix.mat4.create();
         glMatrix.mat4.lookAt(
             this.view,
@@ -158,7 +163,6 @@ export class Scene {
             'varying float vShininessConstant;' +
             'void main(void) {' +
             ' gl_Position = uProjectionMatrix * uViewMatrix * uRotationMatrix * vec4(aCoordinates + uTranslate, 1.0);' +
-            ' gl_PointSize = 18.0;' +
             ' vColor = aColor;' +
             ' vNormal = aNormal;' +
             ' vShininessConstant = aShininessConstant;' +

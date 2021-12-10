@@ -34,8 +34,8 @@ export class Plane extends Geometry {
 
     initNormals() {
         this.normals = [];
-        this.addNormals(new Vector3(this.position.x, this.position.y + 1000, this.position.z))
-        this.addNormals(new Vector3(this.position.x, this.position.y + 1000, this.position.z))
+        this.addNormals(new Vector3(0,1,0))
+        this.addNormals(new Vector3(0,1,0))
     }
 
     getNormals() {
