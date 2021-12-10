@@ -16,6 +16,7 @@ export class EucalyptusOilBottleScene extends Scene {
         this.moveCameraLeft = false;
         this.moveCameraRight = false;
         this.rotateWorld = false;
+        this.turnLightsOff = false;
     }
 
     _initGeometries() {
@@ -50,10 +51,27 @@ export class EucalyptusOilBottleScene extends Scene {
         this.addGeometry(plane);
     }
 
+    _onKeyDown(event) {
+        //Space
+        if (event.keyCode === 32) {
+            this.turnLightsOff = !this.turnLightsOff;
+        }
+    }
 
     animate() {
         let startTime = new Date();
         this._render();
+        this._update();
         let endTime = new Date();
+    }
+
+    _update() {
+        if (this.turnLightsOff){
+            this.lightsOut = 1;
+        }
+        else {
+            this.lightsOut = 0;
+        }
+        this._bindUniforms();
     }
 }

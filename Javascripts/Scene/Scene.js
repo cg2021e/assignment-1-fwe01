@@ -16,6 +16,7 @@ export class Scene {
     normal_buffer = null;
     camera = [0, 0, 3];
     lookAt = [0, 0, 0];
+    lightsOut = 0;
 
     constructor(canvas) {
         this._initWebGlUtils(canvas);
@@ -176,6 +177,7 @@ export class Scene {
             'uniform float uAmbientIntensity;' +   // It represents the light intensity
             'uniform vec3 uLightPosition;' +
             'uniform mat3 uNormalRotation;' +
+            'uniform float uLightsOut;' +
             'void main(void) {' +
             '   vec3 ambient = uLightConstant * uAmbientIntensity;' +
             '   vec3 lightDirection = (uNormalRotation * uLightPosition) - vCoordinates;' +
@@ -183,7 +185,7 @@ export class Scene {
             '   vec3 normalizedNormal = normalize(uNormalRotation * vNormal);' +
             '   float cosTheta = dot(normalizedNormal, normalizedLight);' +
             '   vec3 diffuse = vec3(0, 0, 0);' +
-            '   if (cosTheta > 0.) {' +
+            '   if (uLightsOut == 0.0 && cosTheta > 0.) {' +
             '       float diffuseIntensity = cosTheta;' +
             '       diffuse = uLightConstant * diffuseIntensity;' +
             '   }' +
@@ -192,7 +194,7 @@ export class Scene {
             '   vec3 normalizedViewer = normalize(uCameraPosition - vCoordinates);' +
             '   float cosPhi = dot(normalizedReflector, normalizedViewer);' +
             '   vec3 specular = vec3(0., 0., 0.);' +
-            '   if (cosPhi > 0.) {' +
+            '   if (uLightsOut == 0.0 && cosPhi > 0.) {' +
             '       float specularIntensity = pow(cosPhi, vShininessConstant);' +
             '       specular = uLightConstant * specularIntensity;' +
             '   }' +
@@ -283,6 +285,10 @@ export class Scene {
         this.webGlUtils.bindUniforms3f(
             'uCameraPosition',
             this.camera
+        )
+        this.webGlUtils.bindUniforms1f(
+            'uLightsOut',
+            this.lightsOut
         )
 
         let uNormalRotation = glMatrix.mat3.create()
