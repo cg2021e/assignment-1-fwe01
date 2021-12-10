@@ -27,6 +27,7 @@ export class Scene {
         this._initRotationMatrix();
         this._initLightSourcePosition();
         this._initTranslate();
+        this.canvas = canvas;
     }
 
     start() {
@@ -309,7 +310,6 @@ export class Scene {
     }
 
     _render() {
-        this.webGlUtils.setBackgroundColor(0.5, 0.5, 0.5, 1.0);
         this.webGlUtils.enableDepthTest();
         this.webGlUtils.enableBlending();
         this.webGlUtils.drawArray(DrawModeEnum.TRIANGLES, 0, this.vertices.length)

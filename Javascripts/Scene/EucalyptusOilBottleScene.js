@@ -106,14 +106,14 @@ export class EucalyptusOilBottleScene extends Scene {
     }
 
     _update() {
+        let vertexChanged = false;
+        let viewChanged = false;
+
         if (this.turnLightsOff) {
             this.lightsOut = 1;
         } else {
             this.lightsOut = 0;
         }
-
-        let vertexChanged = false;
-        let viewChanged = false;
 
         if (this.moveCubeCloser) {
             this.lightsource_cube.translate(new Vector3(0, 0, this.movementSpeed));
@@ -230,6 +230,8 @@ export class EucalyptusOilBottleScene extends Scene {
             var y = event.clientY;
             this.currentPointOnTrackBall = this._getProjectionPointOnSurface(glMatrix.vec3.fromValues(x, y, 0));
             glMatrix.mat4.fromQuat(this.rotation, this._computeCurrentQuat());
+            this.rotationMatrix = this.rotation;
+            this._bindUniforms();
         }
     }
 }

@@ -13,19 +13,29 @@ function drawBottle() {
     scene.start();
     animate();
 
-    document.addEventListener("click", onMouseClick);
     document.addEventListener("keydown", onKeyDown);
+    document.addEventListener("mousedown", onMouseDown, false);
+    document.addEventListener("mouseup", onMouseUp, false);
+    document.addEventListener("mousemove", onMouseMove, false);
 
     function animate() {
         scene.animate()
         requestAnimationFrame(animate);
     }
 
-    function onMouseClick() {
-        scene._onMouseClick()
-    }
-
     function onKeyDown(event) {
         scene._onKeyDown(event)
+    }
+
+    function onMouseDown(event) {
+        scene._onMouseDown(event)
+    }
+
+    function onMouseUp(event) {
+        scene._onMouseUp(event)
+    }
+
+    function onMouseMove(event) {
+        scene._onMouseMove(event)
     }
 }
